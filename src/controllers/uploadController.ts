@@ -31,12 +31,11 @@ class UploadController {
 
     async delete(request: Request, response: Response) {
         const { id } = request.params;
-        console.log(id)
         const uploadService = new UploadService();
 
         try {
             const image = await uploadService.delete(id)
-            return response.status(200).json({ message: "Image is deleted!", image})
+            return response.status(200).json({image})
         } catch (error) {
             return response.status(404).json({ error: "Image not found!"})
         }
