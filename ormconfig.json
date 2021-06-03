@@ -2,9 +2,9 @@
     "type": "postgres",
     "host": "localhost",
     "port": 5432,
-    "username": "add your databse username",
-    "password": "aadd your database password",
-    "database": "add your database name",
+    "username": "postgres",
+    "password": "993899",
+    "database": "upload",
     "entities": [
        "src/entities/**.ts"
     ],

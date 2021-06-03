@@ -28,6 +28,19 @@ class UploadController {
             return response.status(400).json({message: "Invalid file type!"})
         }
     }
+
+    async delete(request: Request, response: Response) {
+        const { id } = request.params;
+        console.log(id)
+        const uploadService = new UploadService();
+
+        try {
+            const image = await uploadService.delete(id)
+            return response.status(200).json({ message: "Image is deleted!", image})
+        } catch (error) {
+            return response.status(404).json({ error: "Image not found!"})
+        }
+    }
 };
 
 export { UploadController };

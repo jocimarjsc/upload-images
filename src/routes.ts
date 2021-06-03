@@ -8,7 +8,9 @@ const router = Router();
 
 const uploadController = new UploadController();
 
-router.post("/uploads", multer(multerConfig).single("file"), uploadController.store);
 router.get("/uploads", uploadController.index);
+router.post("/uploads", multer(multerConfig).single("file"), uploadController.store);
+router.delete("/uploads/:id", uploadController.delete);
+
 
 export { router };

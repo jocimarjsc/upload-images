@@ -33,6 +33,19 @@ class UploadService {
 
         return image;
     }
+
+    async delete(id: string) {
+        const image = await this.uploadRepository.find({ where: {id} });
+        
+        if(!image) {
+            return "image not found!"
+        }
+
+        const removed = await this.uploadRepository.remove(image);
+
+        return removed
+
+    }
 };
 
 export { UploadService }
