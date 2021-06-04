@@ -7,6 +7,7 @@ interface Idata {
     path: string;
     size: number;
 }
+
 class UploadService {
     private uploadRepository: Repository<Upload>;
 
@@ -25,13 +26,13 @@ class UploadService {
     }
 
     async create({name, path, size}: Idata){
-        const image = this.uploadRepository.create({
+        const img = this.uploadRepository.create({
             name, path, size
         });
 
-        await this.uploadRepository.save(image);
+        await this.uploadRepository.save(img);
 
-        return image;
+        return img;
     }
 
     async delete(id: string) {

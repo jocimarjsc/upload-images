@@ -22,6 +22,7 @@ class UploadController {
             const img = await uploadService.create({
                 name, path, size
             });
+            console.log(img)
 
             return response.status(201).json(img);
         } catch (error) {
