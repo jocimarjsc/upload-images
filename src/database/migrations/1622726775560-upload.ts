@@ -17,7 +17,7 @@ export class upload1622726775560 implements MigrationInterface {
                         type: "varchar"
                     },
                     {
-                        name: "path",
+                        name: "key",
                         type: "varchar"
                     },
                     {

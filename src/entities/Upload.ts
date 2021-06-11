@@ -1,5 +1,6 @@
 import { Column, CreateDateColumn, Entity, PrimaryColumn, UpdateDateColumn } from "typeorm";
 import { v4 as uuid} from "uuid";
+import { keyUrl } from "../controllers/uploadController";
 
 @Entity("uploads")
 class Upload {
@@ -10,7 +11,7 @@ class Upload {
     name: string;
 
     @Column()
-    path: string;
+    key: string;
 
     @Column()
     size: number;
@@ -28,6 +29,10 @@ class Upload {
         if(!this.id) {
             this.id = uuid();
         };
+
+        if(!this.url) {
+            this.url = `${process.env.APP_URL}/files/${keyUrl}`
+        }
     }
 };
 

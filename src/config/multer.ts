@@ -1,26 +1,49 @@
-import multer from "multer";
+import multer, { Multer } from "multer";
 import path from "path";
 import crypto from "crypto";
-import { Request } from "express";
+import multerS3 from "multer-s3";
+import aws from "aws-sdk";
 
-const multerConfig = {
-    dest: path.resolve(__dirname, "..", "..", process.env.PATH_UPLOAD),
-    storage: multer.diskStorage({
-        destination: (req: any, file: any, cb: any) => {
+const storateTypes = {
+    local: multer.diskStorage({
+        destination: (req: Express.Request, file: Express.Multer.File & {key: string }, cb: any) => {
             cb(null, path.resolve(__dirname, "..", "..", process.env.PATH_UPLOAD));
         },
-        filename: (req: any, file: any, cb: any) => {
+        filename: (req: Express.Request, file: Express.Multer.File & {key: string }, cb: any) => {
+            crypto.randomBytes(16, (err, hash) => {
+                if(err) {
+                    cb(err);
+                };
+                const extensionName = path.extname(file.originalname);
+                file.key = `${hash.toString("hex")}${extensionName}`;
+
+                cb(null, file.key)
+            })
+        }
+    }),
+    s3: multerS3({
+        s3: new aws.S3(),
+        bucket: "uploads-joci",
+        contentType: multerS3.AUTO_CONTENT_TYPE,
+        acl: "public-read",
+        key: (request, file, cb) => {
             crypto.randomBytes(16, (err, hash) => {
                 if(err) {
                     cb(err);
                 };
 
-                const fileName = `${hash.toString("hex")}-${file.originalname}`;
+                const extensionName = path.extname(file.originalname);
+                const fileName = `${hash.toString("hex")}${extensionName}`;
 
                 cb(null, fileName)
             })
         }
-    }),
+    })
+};
+
+const multerConfig = {
+    dest: path.resolve(__dirname, "..", "..", process.env.PATH_UPLOAD),
+    storage: storateTypes[process.env.STORAGE_TYPE],
     limits: {
         fileSize: 2 * 1024 * 1024
     },
@@ -29,8 +52,7 @@ const multerConfig = {
             "image/jpeg",
             "image/pjpeg",
             "image/png",
-            "image/gif",
-            "image/jpg"
+            "image/gif"
         ];
 
         if(allowedMimes.includes(file.mimetype)) {

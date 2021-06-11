@@ -1,11 +1,15 @@
 import { getCustomRepository, Repository } from "typeorm"
 import { Upload } from "../entities/Upload"
 import { UploadRepository } from "../repositories/UploadRepository";
+import aws from "aws-sdk";
+
+const s3 = new aws.S3()
 
 interface Idata {
     name: string;
-    path: string;
+    key: string;
     size: number;
+    url: string;
 }
 
 class UploadService {
@@ -25,9 +29,20 @@ class UploadService {
         return images;
     }
 
-    async create({name, path, size}: Idata){
+    async show(id: string) {
+        const image = await this.uploadRepository.find({ where: {id} });
+        
+        if(!image) {
+            return "image not found!"
+        }
+
+        return image
+
+    }
+
+    async create({name, key, size, url}: Idata){
         const img = this.uploadRepository.create({
-            name, path, size
+            name, key, size, url
         });
 
         await this.uploadRepository.save(img);
@@ -36,15 +51,25 @@ class UploadService {
     }
 
     async delete(id: string) {
-        const image = await this.uploadRepository.find({ where: {id} });
+        const images = await this.uploadRepository.find({ where: {id} });
         
-        if(!image) {
+        if(!images) {
             return "image not found!"
         }
+        
+        const deletedImage = s3.deleteObject({
+            Bucket:"uploads-joci",
+            Key: images[0].key
+        }, (e) => {
+            if(e) {
+                return e
+            }
+            return "Image is deleted!"
+        })
 
-        const removed = await this.uploadRepository.remove(image);
+        await this.uploadRepository.remove(images);
 
-        return removed
+        return deletedImage
 
     }
 };
