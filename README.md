@@ -33,6 +33,34 @@ AWS_SECRET_ACCESS_KEY = Your Secret access key
 AWS_DEFAUL_REGION = Your Region bucket
 ```
 
+### 🔰 Banco de dados
+> Instale o [PostgreSQL](https://www.postgresql.org/download/), e sem seguida crie um database com o seguinte nome:
+```
+  uploads
+```
+
+> na raiz do projeto crie um arquivo com o seguinte nom ***"ormconfig.json"***
+> e cole esse código dentro, e coloque as credências do seu banco de dados.
+```
+  {
+    "type": "postgres",
+    "host": "localhost",
+    "port": 5432,
+    "username": "your username",
+    "password": "your password",
+    "database": "your database",
+    "entities": [
+       "src/entities/**.ts"
+    ],
+    "migrations": [
+       "src/database/migrations/**.ts"
+    ],
+    "cli": {
+       "migrationsDir": "src/database/migrations"
+    }
+ }
+```
+
 ### 🔥 Inicar a aplicação
 ```
 npm run dev
