@@ -2,6 +2,9 @@ import { getCustomRepository, Repository } from "typeorm"
 import { Upload } from "../entities/Upload"
 import { UploadRepository } from "../repositories/UploadRepository";
 import aws from "aws-sdk";
+import fs from "fs";
+import path from "path";
+import { promisify } from "util";
 
 const s3 = new aws.S3()
 
@@ -52,24 +55,31 @@ class UploadService {
 
     async delete(id: string) {
         const images = await this.uploadRepository.find({ where: {id} });
-        
+
         if(!images) {
             return "image not found!"
         }
-        
-        const deletedImage = s3.deleteObject({
-            Bucket:"uploads-joci",
-            Key: images[0].key
-        }, (e) => {
-            if(e) {
-                return e
-            }
-            return "Image is deleted!"
-        })
 
+        const key = images[0].key
+
+        const options = {
+            Bucket: "uploads-joci",
+            Key: key
+        }
+
+        if(process.env.STORAGE_TYPE === "s3") {
+            //deleted file in aws.s3
+            s3.deleteObject(options).promise();
+        } else {
+            promisify(fs.unlink)(path.resolve(__dirname, "..", "..", "tmp", "uploads", key))
+        }
+        
         await this.uploadRepository.remove(images);
 
-        return deletedImage
+        const msg = {
+            message: "Image is deleted!"
+        }
+        return msg
 
     }
 };
