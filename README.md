@@ -39,7 +39,7 @@ AWS_DEFAUL_REGION = Your Region bucket
   uploads
 ```
 
-> na raiz do projeto crie um arquivo com o seguinte nom ***"ormconfig.json"***
+> na raiz do projeto crie um arquivo com o seguinte nome ***"ormconfig.json"***
 > e cole esse código dentro, e coloque as credências do seu banco de dados.
 ```
   {
@@ -59,6 +59,14 @@ AWS_DEFAUL_REGION = Your Region bucket
        "migrationsDir": "src/database/migrations"
     }
  }
+```
+
+### 📦 Pasta de Upload
+
+> Criar as seguintes pastas na raiz do projeto
+```
+  > tmp
+    > upload
 ```
 
 ### 🔥 Inicar a aplicação
