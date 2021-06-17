@@ -1,3 +1,7 @@
+<p align="center">
+      <img alt="Podcastr" src="./tmp/uploads/cover-readme.png"  />
+</p>
+
 # Upload de imagem
 
 > Simples upload de imagens, quando rodando em desenvolvimento as imagens são salvas localmente, quando em produção elas são salvas no s3 da Amazon.
